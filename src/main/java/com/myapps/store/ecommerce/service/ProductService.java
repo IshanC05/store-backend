@@ -1,8 +1,11 @@
 package com.myapps.store.ecommerce.service;
 
 import com.myapps.store.ecommerce.exception.ResourceNotFoundException;
+import com.myapps.store.ecommerce.model.Category;
 import com.myapps.store.ecommerce.model.Product;
+import com.myapps.store.ecommerce.payload.CategoryDto;
 import com.myapps.store.ecommerce.payload.ProductDto;
+import com.myapps.store.ecommerce.repository.CategoryRepository;
 import com.myapps.store.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +19,17 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ProductDto createProduct(ProductDto productDto) {
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    public ProductDto createProduct(ProductDto productDto, int categoryId) {
+        // fetch category first
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category  with " + "Id" + ":" + categoryId + " not found"));
+
         // ProductDto to Product
         Product newProduct = toEntity(productDto);
+        newProduct.setCategory(category);
+
         Product savedProduct = productRepository.save(newProduct);
 
         // Product to ProductDto
@@ -57,6 +68,12 @@ public class ProductService {
         return savedProductDto;
     }
 
+    public List<ProductDto> findProductByCategory(int catergoryId) {
+        Category category = categoryRepository.findById(catergoryId).orElseThrow(() -> new ResourceNotFoundException("Category with Id:" + catergoryId + " not found"));
+        List<Product> allProductsByCategory = productRepository.findByCategory(category);
+        return allProductsByCategory.stream().map(product -> toDto(product)).collect(Collectors.toList());
+    }
+
     // ProductDto to Product
     public Product toEntity(ProductDto productDto) {
         Product product = new Product();
@@ -82,6 +99,14 @@ public class ProductService {
         productDto.setLive(product.isLive());
         productDto.setStock(product.isStock());
         productDto.setImageName(product.getImageName());
+
+        // get CategoryDto values from product
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setCategoryId(product.getCategory().getCategoryId());
+        categoryDto.setTitle(product.getCategory().getTitle());
+
+        // set CategoryDto values in productDto
+        productDto.setCategoryDto(categoryDto);
         return productDto;
     }
 }

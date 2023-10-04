@@ -17,6 +17,9 @@ public class Product {
     private boolean live;
     private String imageName;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Category category;
+
     public int getProductId() {
         return productId;
     }
@@ -79,5 +82,13 @@ public class Product {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

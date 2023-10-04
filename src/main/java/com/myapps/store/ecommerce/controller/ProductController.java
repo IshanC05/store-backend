@@ -17,9 +17,9 @@ public class ProductController {
     private ProductService productService;
 
     // add a product
-    @PostMapping(path = "/create")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
-        ProductDto createdProductDto = productService.createProduct(productDto);
+    @PostMapping(path = "/create/{categoryId}")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @PathVariable int categoryId) {
+        ProductDto createdProductDto = productService.createProduct(productDto, categoryId);
         return new ResponseEntity<>(createdProductDto, HttpStatus.CREATED);
     }
 
@@ -46,9 +46,15 @@ public class ProductController {
 
     // update product
     @PutMapping(path = "/update/{productId}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable int productId,
-                                                    @RequestBody ProductDto newProductDto) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable int productId, @RequestBody ProductDto newProductDto) {
         ProductDto updatedProductDto = productService.updateProductById(productId, newProductDto);
         return new ResponseEntity<>(updatedProductDto, HttpStatus.ACCEPTED);
+    }
+
+    // find product by category
+    @GetMapping(path = "/category/{categoryId}")
+    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable int categoryId) {
+        List<ProductDto> allProductsByCategory = productService.findProductByCategory(categoryId);
+        return new ResponseEntity<>(allProductsByCategory, HttpStatus.ACCEPTED);
     }
 }
