@@ -16,5 +16,4 @@ public class EcommerceApplication {
     public ModelMapper mapper() {
         return new ModelMapper();
     }
-
 }
