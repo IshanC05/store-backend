@@ -5,9 +5,14 @@ import com.myapps.store.ecommerce.model.Category;
 import com.myapps.store.ecommerce.model.Product;
 import com.myapps.store.ecommerce.payload.CategoryDto;
 import com.myapps.store.ecommerce.payload.ProductDto;
+import com.myapps.store.ecommerce.payload.ProductResponse;
 import com.myapps.store.ecommerce.repository.CategoryRepository;
 import com.myapps.store.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,9 +42,38 @@ public class ProductService {
         return savedProductDto;
     }
 
-    public List<ProductDto> viewAll() {
-        List<Product> allProducts = productRepository.findAll();
-        return allProducts.stream().map(this::toDto).collect(Collectors.toList());
+    public ProductResponse viewAll(int pageNumber, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort = null;
+
+        if (sortDir.trim().toLowerCase().equals("asc")) {
+            sort = Sort.by(sortBy).ascending();
+        } else {
+            sort = Sort.by(sortBy).descending();
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Product> page = productRepository.findAll(pageable);
+
+        List<Product> pageProducts = page.getContent();
+
+        List<Product> allLiveProducts = pageProducts.stream().filter(p -> p.isLive()).collect(Collectors.toList());
+
+        List<ProductDto> allLiveProductsDto = allLiveProducts.stream().map(this::toDto).collect(Collectors.toList());
+
+//        List<Product> allProducts = productRepository.findAll();
+//        return allProducts.stream().map(this::toDto).collect(Collectors.toList());
+
+        ProductResponse productResponse = new ProductResponse();
+
+        productResponse.setContent(allLiveProductsDto);
+        productResponse.setPageNumber(page.getNumber());
+        productResponse.setPageSize(page.getSize());
+        productResponse.setTotalPages(page.getTotalPages());
+        productResponse.setLastPage(page.isLast());
+
+        return productResponse;
     }
 
     public ProductDto viewProductById(int productId) {

@@ -1,6 +1,8 @@
 package com.myapps.store.ecommerce.controller;
 
+import com.myapps.store.ecommerce.payload.AppConstants;
 import com.myapps.store.ecommerce.payload.ProductDto;
+import com.myapps.store.ecommerce.payload.ProductResponse;
 import com.myapps.store.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +27,9 @@ public class ProductController {
 
     // get all products
     @GetMapping(path = "/view")
-    public ResponseEntity<List<ProductDto>> viewAllProducts() {
-        List<ProductDto> allProductsDto = productService.viewAll();
-        return new ResponseEntity<>(allProductsDto, HttpStatus.OK);
+    public ProductResponse viewAllProducts(@RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER_STRING, required = false) int pageNumber, @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE_STRING, required = false) int pageSize, @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY_STRING, required = false) String sortBy, @RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR_STRING, required = false) String sortDir) {
+        ProductResponse productResponse = productService.viewAll(pageNumber, pageSize, sortBy, sortDir);
+        return productResponse;
     }
 
     // get product by id
