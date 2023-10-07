@@ -37,4 +37,8 @@ public class User {
 
     private boolean active;
 
+    // Relationship with cart
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
 }
