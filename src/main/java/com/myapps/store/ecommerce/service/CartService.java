@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Service
 public class CartService {
@@ -33,53 +31,109 @@ public class CartService {
     @Autowired
     private ModelMapper mapper;
 
+//    public CartDto addItemToCart(ItemRequest item, String username) {
+//        int productId = item.getProductId();
+//        int quantity = item.getQuantity();
+//        User foundUser = userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//
+//        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+//
+//        if (!product.isStock()) {
+//            throw new ResourceNotFoundException("Product out of Stock");
+//        }
+//
+//        CartItem cartItem = new CartItem();
+//        cartItem.setProduct(product);
+//        cartItem.setQuantity(quantity);
+//        double totalPrice = product.getProductPrice() * quantity;
+//        cartItem.setTotalPrice(totalPrice);
+//
+//        Cart cart = foundUser.getCart();
+//
+//        if (cart == null) cart = new Cart();
+//        cartItem.setCart(cart);
+//        Set<CartItem> allCartItems = cart.getCartItem();
+//
+//        AtomicBoolean flag = new AtomicBoolean(false);
+//
+//        Set<CartItem> newProduct = allCartItems.stream().map((i) -> {
+//            if (i.getProduct().getProductId() == product.getProductId()) {
+//                i.setQuantity(quantity);
+//                i.setTotalPrice(totalPrice);
+//                flag.set(true);
+//            }
+//            return i;
+//
+//        }).collect(Collectors.toSet());
+//
+//        if (flag.get()) {
+//            allCartItems.clear();
+//            allCartItems.addAll(newProduct);
+//
+//        } else {
+//            cartItem.setCart(cart);
+//            allCartItems.add(cartItem);
+//        }
+//
+//        cart.setCartItem(allCartItems);
+//
+//        Cart savedCart = cartRepository.save(cart);
+//        return mapper.map(savedCart, CartDto.class);
+//    }
+
     public CartDto addItemToCart(ItemRequest item, String username) {
         int productId = item.getProductId();
         int quantity = item.getQuantity();
+
+        // Retrieve the user
         User foundUser = userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        // Retrieve the product
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
+        // Check product availability
         if (!product.isStock()) {
             throw new ResourceNotFoundException("Product out of Stock");
         }
 
-        CartItem cartItem = new CartItem();
-        cartItem.setProduct(product);
-        cartItem.setQuantity(quantity);
-        double totalPrice = product.getProductPrice() * quantity;
-        cartItem.setTotalPrice(totalPrice);
-
+        // Retrieve the user's existing cart, or create a new one if it doesn't exist
         Cart cart = foundUser.getCart();
 
-        if (cart == null) cart = new Cart();
-        cartItem.setCart(cart);
-        Set<CartItem> allCartItems = cart.getCartItem();
-
-        AtomicBoolean flag = new AtomicBoolean(false);
-
-        Set<CartItem> newProduct = allCartItems.stream().map((i) -> {
-            if (i.getProduct().getProductId() == product.getProductId()) {
-                i.setQuantity(quantity);
-                i.setTotalPrice(totalPrice);
-                flag.set(true);
-            }
-            return i;
-
-        }).collect(Collectors.toSet());
-
-        if (flag.get()) {
-            allCartItems.clear();
-            allCartItems.addAll(newProduct);
-
-        } else {
-            cartItem.setCart(cart);
-            allCartItems.add(cartItem);
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUser(foundUser); // Set the user for the cart
         }
 
+        // Check if the product is already in the cart
+        CartItem existingCartItem = null;
+
+        for (CartItem cartItem : cart.getCartItem()) {
+            if (cartItem.getProduct().getProductId() == productId) {
+                existingCartItem = cartItem;
+                break;
+            }
+        }
+
+        if (existingCartItem != null) {
+            // Update the existing cart item
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            existingCartItem.setTotalPrice(product.getProductPrice() * existingCartItem.getQuantity());
+        } else {
+            // Create a new cart item
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setTotalPrice(product.getProductPrice() * quantity);
+            cartItem.setCart(cart); // Set the cart for the cart item
+            cart.getCartItem().add(cartItem);
+        }
+
+        // Save the updated cart
         Cart savedCart = cartRepository.save(cart);
+
         return mapper.map(savedCart, CartDto.class);
     }
+
 
     public CartDto retrieveCart(String email) {
         User foundUser = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
