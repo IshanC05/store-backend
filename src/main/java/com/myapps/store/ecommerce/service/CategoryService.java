@@ -27,7 +27,7 @@ public class CategoryService {
     }
 
     public CategoryDto updateCategory(CategoryDto newCategoryDto, int categoryId) {
-        Category oldCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category  with " + "Id" + ":" + categoryId + " not found"));
+        Category oldCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         oldCategory.setCategoryId(categoryId);
         oldCategory.setTitle(newCategoryDto.getTitle());
         Category savedCategory = categoryRepository.save(oldCategory);
@@ -35,17 +35,17 @@ public class CategoryService {
     }
 
     public void deleteCategory(int categoryId) {
-        Category categoryToBeDeleted = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category  with " + "Id" + ":" + categoryId + " not found"));
+        Category categoryToBeDeleted = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         categoryRepository.delete(categoryToBeDeleted);
     }
 
     public CategoryDto viewCategoryById(int categoryId) {
-        Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category  with " + "Id" + ":" + categoryId + " not found"));
+        Category foundCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         return this.mapper.map(foundCategory, CategoryDto.class);
     }
 
     public List<CategoryDto> viewAll() {
         List<Category> allCategories = categoryRepository.findAll();
-        return allCategories.stream().map(category -> this.mapper.map(category, CategoryDto.class)).collect(Collectors.toList());
+        return allCategories.stream().map(category -> mapper.map(category, CategoryDto.class)).collect(Collectors.toList());
     }
 }

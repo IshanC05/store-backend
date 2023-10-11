@@ -1,6 +1,7 @@
 package com.myapps.store.ecommerce.service;
 
 import com.myapps.store.ecommerce.exception.ResourceNotFoundException;
+import com.myapps.store.ecommerce.exception.UserAlreadyPresentException;
 import com.myapps.store.ecommerce.model.User;
 import com.myapps.store.ecommerce.payload.UserDto;
 import com.myapps.store.ecommerce.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,17 +24,23 @@ public class UserService {
 
     public UserDto createUser(UserDto newUserDto) {
         User newUser = mapper.map(newUserDto, User.class);
+        // Check email id is unique
+        String email = newUser.getEmail();
+        Optional<User> isUserAvailable = userRepository.findByEmail(email);
+        if (isUserAvailable.isPresent()) throw new UserAlreadyPresentException("User with same email already exists.");
         User savedUser = userRepository.save(newUser);
         return mapper.map(savedUser, UserDto.class);
     }
 
     public UserDto getUserById(int userId) {
-        User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not " + "found with id:" + userId));
+        User foundUser = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not " +
+                "found"));
         return mapper.map(foundUser, UserDto.class);
     }
 
     public void deleteUser(int userId) {
-        User userToBeDeleted = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User " + "not " + "found with id:" + userId));
+        User userToBeDeleted = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not " +
+                "found"));
         userRepository.delete(userToBeDeleted);
     }
 
