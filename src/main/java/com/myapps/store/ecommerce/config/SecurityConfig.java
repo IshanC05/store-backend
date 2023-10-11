@@ -43,7 +43,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-        return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(authorize -> authorize.requestMatchers((mvc.pattern("/user/create"))).permitAll().requestMatchers((mvc.pattern("/auth/login"))).permitAll().anyRequest().authenticated())
+        return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers((mvc.pattern("/user/create"))).permitAll()
+                        .requestMatchers((mvc.pattern("/auth/**"))).permitAll()
+                        .anyRequest().authenticated())
 //                .httpBasic(withDefaults())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point)).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
@@ -54,7 +57,9 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 //                WebMvcConfigurer.super.addCorsMappings(registry);
-                registry.addMapping("/**");
+                registry.addMapping("/**")
+                        .allowedHeaders("*")
+                        .allowedOrigins("*");
             }
         };
     }

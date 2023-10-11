@@ -5,6 +5,7 @@ import com.myapps.store.ecommerce.payload.JwtRequest;
 import com.myapps.store.ecommerce.payload.JwtResponse;
 import com.myapps.store.ecommerce.payload.UserDto;
 import com.myapps.store.ecommerce.security.JwtHelper;
+import com.myapps.store.ecommerce.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,13 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,6 +39,22 @@ public class AuthController {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto newUserDto) {
+        Date date = new Date();
+        newUserDto.setDate(date);
+        String password = newUserDto.getPassword();
+        newUserDto.setPassword(passwordEncoder.encode(password));
+        UserDto createdUser = userService.createUser(newUserDto);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {

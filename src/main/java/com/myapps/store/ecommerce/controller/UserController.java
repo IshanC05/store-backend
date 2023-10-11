@@ -5,10 +5,8 @@ import com.myapps.store.ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,19 +15,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @PostMapping(path = "/create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto newUserDto) {
-        Date date = new Date();
-        newUserDto.setDate(date);
-        String password = newUserDto.getPassword();
-        newUserDto.setPassword(passwordEncoder.encode(password));
-        UserDto createdUser = userService.createUser(newUserDto);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
 
     @GetMapping(path = "/find/{userId}")
     public ResponseEntity<UserDto> findUserById(@PathVariable int userId) {
