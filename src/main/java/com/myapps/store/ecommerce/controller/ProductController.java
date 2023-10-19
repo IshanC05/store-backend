@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -55,8 +53,8 @@ public class ProductController {
 
     // find product by category
     @GetMapping(path = "/category/{categoryId}")
-    public ResponseEntity<List<ProductDto>> getProductsByCategory(@PathVariable int categoryId) {
-        List<ProductDto> allProductsByCategory = productService.findProductByCategory(categoryId);
-        return new ResponseEntity<>(allProductsByCategory, HttpStatus.ACCEPTED);
+    public ProductResponse getProductsByCategory(@PathVariable int categoryId, @RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER_STRING, required = false) int pageNumber, @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE_STRING, required = false) int pageSize, @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY_STRING, required = false) String sortBy, @RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR_STRING, required = false) String sortDir) {
+        ProductResponse productResponse = productService.findProductByCategory(categoryId, pageNumber, pageSize, sortBy, sortDir);
+        return productResponse;
     }
 }

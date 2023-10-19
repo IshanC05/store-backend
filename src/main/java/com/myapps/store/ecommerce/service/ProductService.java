@@ -62,9 +62,6 @@ public class ProductService {
 
         List<ProductDto> allLiveProductsDto = allLiveProducts.stream().map(this::toDto).collect(Collectors.toList());
 
-//        List<Product> allProducts = productRepository.findAll();
-//        return allProducts.stream().map(this::toDto).collect(Collectors.toList());
-
         ProductResponse productResponse = new ProductResponse();
 
         productResponse.setContent(allLiveProductsDto);
@@ -102,10 +99,23 @@ public class ProductService {
         return savedProductDto;
     }
 
-    public List<ProductDto> findProductByCategory(int catergoryId) {
-        Category category = categoryRepository.findById(catergoryId).orElseThrow(() -> new ResourceNotFoundException("Category with Id:" + catergoryId + " not found"));
-        List<Product> allProductsByCategory = productRepository.findByCategory(category);
-        return allProductsByCategory.stream().map(product -> toDto(product)).collect(Collectors.toList());
+    public ProductResponse findProductByCategory(int categoryId, int pageNumber, int pageSize, String sortBy, String sortDir) {
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category with Id:" + categoryId + " not found"));
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Product> page = this.productRepository.findByCategory(category, pageable);
+        List<Product> product = page.getContent();
+        List<ProductDto> productDto = product.stream().map(p -> toDto(p)).collect(Collectors.toList());
+
+        ProductResponse response = new ProductResponse();
+        response.setContent(productDto);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalPages(page.getTotalPages());
+        response.setLastPage(page.isLast());
+
+        return response;
     }
 
     // ProductDto to Product

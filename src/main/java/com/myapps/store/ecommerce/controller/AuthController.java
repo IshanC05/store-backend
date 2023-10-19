@@ -6,6 +6,7 @@ import com.myapps.store.ecommerce.payload.JwtResponse;
 import com.myapps.store.ecommerce.payload.UserDto;
 import com.myapps.store.ecommerce.security.JwtHelper;
 import com.myapps.store.ecommerce.service.UserService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +48,7 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping(path = "/create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto newUserDto) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto newUserDto) {
         Date date = new Date();
         newUserDto.setDate(date);
         String password = newUserDto.getPassword();
@@ -57,7 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody JwtRequest request) {
         this.doAuthenticate(request.getUsername(), request.getPassword());
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         String token = helper.generateToken(userDetails);

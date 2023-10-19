@@ -46,6 +46,10 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(authorize -> authorize
                         .requestMatchers((mvc.pattern("/user/create"))).permitAll()
                         .requestMatchers((mvc.pattern("/auth/**"))).permitAll()
+                        .requestMatchers((mvc.pattern("/product/view"))).permitAll()
+                        .requestMatchers((mvc.pattern("/product/view/**"))).permitAll()
+                        .requestMatchers((mvc.pattern("/category/viewAll"))).permitAll()
+                        .requestMatchers((mvc.pattern("/product/category/**"))).permitAll()
                         .anyRequest().authenticated())
 //                .httpBasic(withDefaults())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point)).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
