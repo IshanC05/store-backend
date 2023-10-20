@@ -16,7 +16,7 @@ public class JwtRequest {
     @Size(min = 5, message = "Invalid Email address")
     private String username;
 
-    @NotEmpty
+    @NotEmpty(message = "Password must not be empty")
     @Size(min = 5, message = "Password must be at-least 5 chars long")
     private String password;
 }
