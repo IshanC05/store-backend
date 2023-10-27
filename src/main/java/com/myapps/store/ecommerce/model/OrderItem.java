@@ -10,7 +10,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderItemId;
 
-    @OneToOne
+    @ManyToOne
     private Product product;
 
     private double totalProductPrice;

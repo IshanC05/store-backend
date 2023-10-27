@@ -7,6 +7,15 @@ public class OrderItemDto {
     private int orderItemId;
     private ProductDto product;
     private double totalProductPrice;
+    private int productQuantity;
+
+    public int getProductQuantity() {
+        return productQuantity;
+    }
+
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
 
     @JsonIgnore
     private OrderDto order;

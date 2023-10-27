@@ -43,4 +43,12 @@ public class OrderController {
         OrderResponse findAllOrders = orderService.findAllOrders(pageNumber, pageSize);
         return findAllOrders;
     }
+
+    @GetMapping("/find")
+    public OrderResponse findAllOrdersByUserId(@RequestParam(defaultValue = "2", value = "pageSize") int pageSize,
+                                               @RequestParam(defaultValue = "0", value = "pageNumber") int pageNumber,
+                                               Principal principal) {
+        OrderResponse findAllOrders = orderService.findAllOrdersByUser(pageNumber, pageSize, principal.getName());
+        return findAllOrders;
+    }
 }

@@ -63,7 +63,8 @@ public class SecurityConfig {
 //                WebMvcConfigurer.super.addCorsMappings(registry);
                 registry.addMapping("/**")
                         .allowedHeaders("*")
-                        .allowedOrigins("*");
+                        .allowedOrigins("*")
+                        .allowedMethods("*");
             }
         };
     }

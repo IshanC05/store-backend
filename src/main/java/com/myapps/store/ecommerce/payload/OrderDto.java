@@ -12,6 +12,16 @@ public class OrderDto {
     private Date orderDelivered;
     private double orderAmt;
     private String billingAddress;
+    private Date orderCreatedAt;
+
+    public Date getOrderCreatedAt() {
+        return orderCreatedAt;
+    }
+
+    public void setOrderCreatedAt(Date orderCreatedAt) {
+        this.orderCreatedAt = orderCreatedAt;
+    }
+
     private UserDto user;
     private Set<OrderItemDto> orderItem = new HashSet<>();
 

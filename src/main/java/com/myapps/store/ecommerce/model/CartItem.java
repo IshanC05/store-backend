@@ -20,7 +20,7 @@ public class CartItem {
     private Cart cart;
 
     // Relationship with product
-    @OneToOne
+    @ManyToOne
     private Product product;
 
 }

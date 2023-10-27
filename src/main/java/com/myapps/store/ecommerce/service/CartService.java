@@ -31,56 +31,6 @@ public class CartService {
     @Autowired
     private ModelMapper mapper;
 
-//    public CartDto addItemToCart(ItemRequest item, String username) {
-//        int productId = item.getProductId();
-//        int quantity = item.getQuantity();
-//        User foundUser = userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-//
-//        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-//
-//        if (!product.isStock()) {
-//            throw new ResourceNotFoundException("Product out of Stock");
-//        }
-//
-//        CartItem cartItem = new CartItem();
-//        cartItem.setProduct(product);
-//        cartItem.setQuantity(quantity);
-//        double totalPrice = product.getProductPrice() * quantity;
-//        cartItem.setTotalPrice(totalPrice);
-//
-//        Cart cart = foundUser.getCart();
-//
-//        if (cart == null) cart = new Cart();
-//        cartItem.setCart(cart);
-//        Set<CartItem> allCartItems = cart.getCartItem();
-//
-//        AtomicBoolean flag = new AtomicBoolean(false);
-//
-//        Set<CartItem> newProduct = allCartItems.stream().map((i) -> {
-//            if (i.getProduct().getProductId() == product.getProductId()) {
-//                i.setQuantity(quantity);
-//                i.setTotalPrice(totalPrice);
-//                flag.set(true);
-//            }
-//            return i;
-//
-//        }).collect(Collectors.toSet());
-//
-//        if (flag.get()) {
-//            allCartItems.clear();
-//            allCartItems.addAll(newProduct);
-//
-//        } else {
-//            cartItem.setCart(cart);
-//            allCartItems.add(cartItem);
-//        }
-//
-//        cart.setCartItem(allCartItems);
-//
-//        Cart savedCart = cartRepository.save(cart);
-//        return mapper.map(savedCart, CartDto.class);
-//    }
-
     public CartDto addItemToCart(ItemRequest item, String username) {
         int productId = item.getProductId();
         int quantity = item.getQuantity();

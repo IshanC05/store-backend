@@ -2,8 +2,10 @@ package com.myapps.store.ecommerce.service;
 
 import com.myapps.store.ecommerce.exception.ResourceNotFoundException;
 import com.myapps.store.ecommerce.exception.UserAlreadyPresentException;
+import com.myapps.store.ecommerce.model.Cart;
 import com.myapps.store.ecommerce.model.User;
 import com.myapps.store.ecommerce.payload.UserDto;
+import com.myapps.store.ecommerce.repository.CartRepository;
 import com.myapps.store.ecommerce.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     public UserDto createUser(UserDto newUserDto) {
@@ -29,6 +34,9 @@ public class UserService {
         Optional<User> isUserAvailable = userRepository.findByEmail(email);
         if (isUserAvailable.isPresent()) throw new UserAlreadyPresentException("User with same email already exists.");
         User savedUser = userRepository.save(newUser);
+        Cart cart = new Cart();
+        cart.setUser(savedUser);
+        Cart savedCart = cartRepository.save(cart);
         return mapper.map(savedUser, UserDto.class);
     }
 

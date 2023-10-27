@@ -20,11 +20,12 @@ public class CartController {
 
     @PostMapping(path = "/")
     public ResponseEntity<CartDto> addToCart(@RequestBody ItemRequest itemRequest, Principal principal) {
+//        System.out.println(itemRequest);
         CartDto cartDto = cartService.addItemToCart(itemRequest, principal.getName());
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/")
+    @GetMapping(path = "/user")
     public ResponseEntity<CartDto> getCart(Principal principal) {
         CartDto cart = cartService.retrieveCart(principal.getName());
         return new ResponseEntity<>(cart, HttpStatus.OK);

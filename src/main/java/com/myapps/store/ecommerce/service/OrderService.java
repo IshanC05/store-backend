@@ -123,5 +123,28 @@ public class OrderService {
         return response;
     }
 
+    public OrderResponse findAllOrdersByUser(int pageNumber, int pageSize, String username) {
+
+        User foundUser = userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User " + "not found"));
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Order> findAll = orderRepository.findAllByUser(foundUser, pageable);
+        List<Order> content = findAll.getContent();
+
+        // change order to orderDto
+        List<OrderDto> collect = content.stream().map((each) -> this.modelMapper.map(each, OrderDto.class)).collect(Collectors.toList());
+        OrderResponse response = new OrderResponse();
+        response.setContent(collect);
+        response.setPageNumber(findAll.getNumber());
+        response.setLastPage(findAll.isLast());
+        response.setPageSize(findAll.getSize());
+        response.setTotalPage(findAll.getTotalPages());
+
+        // getTotalElements return Long
+        response.setTotalElements(findAll.getTotalElements());
+
+        return response;
+    }
+
 
 }
