@@ -1,5 +1,6 @@
 package com.myapps.store.ecommerce.controller;
 
+import com.myapps.store.ecommerce.model.TransactionDetails;
 import com.myapps.store.ecommerce.payload.ApiResponse;
 import com.myapps.store.ecommerce.payload.OrderDto;
 import com.myapps.store.ecommerce.payload.OrderRequest;
@@ -45,10 +46,17 @@ public class OrderController {
     }
 
     @GetMapping("/find")
-    public OrderResponse findAllOrdersByUserId(@RequestParam(defaultValue = "2", value = "pageSize") int pageSize,
+    public OrderResponse findAllOrdersByUserId(@RequestParam(defaultValue = "100", value = "pageSize") int pageSize,
                                                @RequestParam(defaultValue = "0", value = "pageNumber") int pageNumber,
                                                Principal principal) {
         OrderResponse findAllOrders = orderService.findAllOrdersByUser(pageNumber, pageSize, principal.getName());
         return findAllOrders;
+    }
+
+    // Razorpay
+
+    @GetMapping("/createTransaction/{amount}")
+    public TransactionDetails createTransaction(@PathVariable double amount) {
+        return orderService.createTransaction(amount);
     }
 }

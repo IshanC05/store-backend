@@ -8,6 +8,8 @@ import com.myapps.store.ecommerce.payload.OrderResponse;
 import com.myapps.store.ecommerce.repository.CartRepository;
 import com.myapps.store.ecommerce.repository.OrderRepository;
 import com.myapps.store.ecommerce.repository.UserRepository;
+import com.razorpay.RazorpayClient;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+
+    // Razorpay
+    private static final String KEY = "rzp_test_5xtWTTvFiifAdd";
+    private static final String KEY_SECRET = "FOECyV9QzinpjwC3Gpxr47xc";
+    private static final String CURRENCY = "INR";
 
     @Autowired
     private UserRepository userRepository;
@@ -146,5 +153,36 @@ public class OrderService {
         return response;
     }
 
+    // Razorpay
+    public TransactionDetails createTransaction(double amount) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("amount", (amount * 100));
+            jsonObject.put("currency", CURRENCY);
+
+
+            RazorpayClient razorpayClient = new RazorpayClient(KEY, KEY_SECRET);
+
+            com.razorpay.Order order = razorpayClient.orders.create(jsonObject);
+
+            TransactionDetails transactionDetails = prepareTransactionDetails(order);
+
+            return transactionDetails;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    private TransactionDetails prepareTransactionDetails(com.razorpay.Order order) {
+        String orderId = order.get("id");
+        String currency = order.get("currency");
+        Integer amount = order.get("amount");
+
+        TransactionDetails transactionDetails = new TransactionDetails(orderId, currency, amount, KEY);
+
+        return transactionDetails;
+    }
 
 }
