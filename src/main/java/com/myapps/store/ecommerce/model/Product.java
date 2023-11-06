@@ -11,6 +11,8 @@ public class Product {
     private int productId;
     private String productName;
     private double productPrice;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String productDesc;
     private boolean stock;
     private int productQuantity;
