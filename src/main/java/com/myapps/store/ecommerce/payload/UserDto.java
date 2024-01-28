@@ -33,5 +33,5 @@ public class UserDto {
     private String phone;
     private Date date;
     private boolean active;
-
+    private String role;
 }

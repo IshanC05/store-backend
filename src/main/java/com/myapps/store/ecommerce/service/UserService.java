@@ -33,6 +33,8 @@ public class UserService {
         String email = newUser.getEmail();
         Optional<User> isUserAvailable = userRepository.findByEmail(email);
         if (isUserAvailable.isPresent()) throw new UserAlreadyPresentException("User with same email already exists.");
+        String role = "ROLE_USER";
+        newUser.setRole(role);
         User savedUser = userRepository.save(newUser);
         Cart cart = new Cart();
         cart.setUser(savedUser);

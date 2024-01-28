@@ -7,6 +7,7 @@ import com.myapps.store.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class ProductController {
 
     // add a product
     @PostMapping(path = "/create/{categoryId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto, @PathVariable int categoryId) {
         ProductDto createdProductDto = productService.createProduct(productDto, categoryId);
         return new ResponseEntity<>(createdProductDto, HttpStatus.CREATED);
@@ -39,6 +41,7 @@ public class ProductController {
 
     // delete product
     @DeleteMapping(path = "delete/{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteProduct(@PathVariable int productId) {
         productService.deleteProductById(productId);
         return new ResponseEntity<>("Product deleted successfully", HttpStatus.NO_CONTENT);
@@ -46,6 +49,7 @@ public class ProductController {
 
     // update product
     @PutMapping(path = "/update/{productId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable int productId, @RequestBody ProductDto newProductDto) {
         ProductDto updatedProductDto = productService.updateProductById(productId, newProductDto);
         return new ResponseEntity<>(updatedProductDto, HttpStatus.ACCEPTED);

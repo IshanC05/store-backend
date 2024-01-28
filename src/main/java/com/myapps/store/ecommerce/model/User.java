@@ -6,11 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -44,8 +42,10 @@ public class User implements UserDetails {
 
     private boolean active;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<Roles> role = new HashSet<>();
+    private String role;
+
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    Set<Roles> role = new HashSet<>();
 
     // Relationship with cart
     @OneToOne(mappedBy = "user")
@@ -53,7 +53,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.role.stream().map((eachRole) -> new SimpleGrantedAuthority(eachRole.getRoleName())).collect(Collectors.toList());
+//        return this.role.stream().map((eachRole) -> new SimpleGrantedAuthority(eachRole.getRoleName())).collect(Collectors.toList());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
+        return Arrays.asList(authority);
     }
 
     @Override
