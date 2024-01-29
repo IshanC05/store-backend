@@ -1,4 +1,5 @@
 com\myapps\store\ecommerce\service\ProductService.class
+com\myapps\store\ecommerce\config\DatabaseConfig.class
 com\myapps\store\ecommerce\payload\CartDto.class
 com\myapps\store\ecommerce\payload\JwtResponse.class
 com\myapps\store\ecommerce\model\CartItem.class
