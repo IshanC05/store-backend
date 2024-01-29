@@ -8,6 +8,7 @@ C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\mai
 C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\repository\CategoryRepository.java
 C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\exception\GlobalExceptionHandler.java
 C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\model\Cart.java
+C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\config\DatabaseConfig.java
 C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\service\UserService.java
 C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\security\JwtAuthenticationEntryPoint.java
 C:\Users\ishaa\OneDrive\Desktop\Coding\FullStack\store\backend\ecommerce\src\main\java\com\myapps\store\ecommerce\payload\ApiResponse.java
