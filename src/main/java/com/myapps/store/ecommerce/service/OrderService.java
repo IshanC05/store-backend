@@ -76,10 +76,13 @@ public class OrderService {
             return orderItem;
         }).collect(Collectors.toSet());
 
+        boolean paidStatus = request.isPaid();
+        String paidStatusString = paidStatus == true ? "PAID" : "NOT PAID";
+
         order.setBillingAddress(orderAddress);
         order.setOrderDelivered(null);
         order.setOrderStatus("CREATED");
-        order.setPaymentStatus("NOT PAID");
+        order.setPaymentStatus(paidStatusString);
         order.setUser(user);
         order.setOrderItem(orderItems);
         order.setOrderAmt(totalOrderPrice.get());
@@ -89,9 +92,7 @@ public class OrderService {
             save = orderRepository.save(order);
             cart.getCartItem().clear();
             cartRepository.save(cart);
-//            System.out.println("Hello");
         } else {
-//            System.out.println(order.getOrderAmt());
             throw new ResourceNotFoundException("Please add items to cart first and then proceed to place the " + "order");
         }
 
