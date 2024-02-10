@@ -38,22 +38,15 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return new CustomUserDetailService();
-//    }
+    // @Bean
+    // public UserDetailsService userDetailsService() {
+    // return new CustomUserDetailService();
+    // }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-        return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers((mvc.pattern("/user/create"))).permitAll()
-                        .requestMatchers((mvc.pattern("/auth/**"))).permitAll()
-                        .requestMatchers((mvc.pattern("/product/view"))).permitAll()
-                        .requestMatchers((mvc.pattern("/product/view/**"))).permitAll()
-                        .requestMatchers((mvc.pattern("/category/viewAll"))).permitAll()
-                        .requestMatchers((mvc.pattern("/product/category/**"))).permitAll()
-                        .anyRequest().authenticated())
-//                .httpBasic(withDefaults())
+        return http.csrf(csrf -> csrf.disable()).cors(Customizer.withDefaults()).authorizeHttpRequests(authorize -> authorize.requestMatchers((mvc.pattern("/user/create"))).permitAll().requestMatchers((mvc.pattern("/auth/**"))).permitAll().requestMatchers((mvc.pattern("/product/view"))).permitAll().requestMatchers((mvc.pattern("/product/view/**"))).permitAll().requestMatchers((mvc.pattern("/category/viewAll"))).permitAll().requestMatchers((mvc.pattern("/product/category/**"))).permitAll().anyRequest().authenticated())
+                // .httpBasic(withDefaults())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point)).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
@@ -62,11 +55,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-//                WebMvcConfigurer.super.addCorsMappings(registry);
-                registry.addMapping("/**")
-                        .allowedHeaders("*")
-                        .allowedOrigins("*")
-                        .allowedMethods("*");
+                registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS").allowedHeaders("*"); // Enable CORS for the whole application.
             }
         };
     }
@@ -78,7 +67,6 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
-
 
     @Scope("prototype")
     @Bean
